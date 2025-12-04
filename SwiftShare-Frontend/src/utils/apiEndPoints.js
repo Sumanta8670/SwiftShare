@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/auth";
+const BASE_URL = "https://swiftshare-pznm.onrender.com";
 
 export const apiEndPoints = {
   GET_CREDITS: `${BASE_URL}/users/credits`,
