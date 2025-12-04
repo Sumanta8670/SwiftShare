@@ -42,7 +42,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Specify allowed origins (replace with your frontend URL in production)
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000", "https://swiftshareultra.netlify.app"));
 
         // Specify allowed HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
