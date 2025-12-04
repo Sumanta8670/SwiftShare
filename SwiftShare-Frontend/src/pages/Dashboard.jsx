@@ -13,7 +13,7 @@ import {
   Zap,
   BarChart3,
 } from "lucide-react";
-import DashboardUpload from "../components/DashBoardUpload.jsx";
+import DashboardUpload from "../components/DashboardUpload.jsx";
 import RecentFiles from "../components/RecentFiles.jsx";
 
 const Dashboard = () => {
