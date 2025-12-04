@@ -1,23 +1,28 @@
 import { useUser } from "@clerk/clerk-react";
-import Navbar from "../components/Navbar.jsx";
 import SideBar from "../components/SideBar.jsx";
+import Navbar from "../components/Navbar.jsx";
 
 const DashboardLayout = ({ children, activeMenu }) => {
   const { user } = useUser();
+
   return (
-    <div>
-      {/* Navbar component goes here */}
-      <Navbar activeMenu={activeMenu} />
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Navbar */}
+
+      {/* Main Layout */}
       {user && (
-        <div className="flex">
-          <div className="max-[1080px]:hidden">
-            {/* Sidebar */}
+        <div className="flex relative min-h-[calc(100vh-61px)]">
+          {/* Desktop Sidebar - Only visible on xl screens */}
+          <div className="hidden xl:block">
             <SideBar activeMenu={activeMenu} />
           </div>
-          <div className="grow mx-5">{children}</div>
+
+          {/* Main Content - Full width on mobile/tablet, adjusts on desktop */}
+          <div className="flex-1 w-full">{children}</div>
         </div>
       )}
     </div>
   );
 };
+
 export default DashboardLayout;

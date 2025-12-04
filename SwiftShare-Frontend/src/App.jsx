@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Upload from "./pages/Upload.jsx";
@@ -9,14 +9,33 @@ import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Toaster } from "react-hot-toast";
 import { UserCreditsProvider } from "./context/UserCreditsContext.jsx";
 import PublicFileView from "./components/PublicFileView.jsx";
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import About from "./pages/About.jsx";
+import Features from "./pages/Features.jsx";
+import Pricing from "./pages/Pricing.jsx";
 
-const App = () => {
+const AppContent = () => {
+  const location = useLocation();
+
+  // Determine if navbar should be shown
+  const showNavbar = true; // Always show navbar
+
   return (
-    <UserCreditsProvider>
-      <BrowserRouter>
-        <Toaster />
+    <div className="flex flex-col min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+      {showNavbar && <Navbar />}
+
+      <main className="grow">
         <Routes>
           <Route path="/" element={<Landing />} />
+
+          {/* Public Pages */}
+          <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/file/:fileId" element={<PublicFileView />} />
+
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -82,15 +101,25 @@ const App = () => {
               </>
             }
           />
-          <Route path="file/:fileId" element={
-            <>
-            <PublicFileView />
-            </>
-          } />
+
           <Route path="/*" element={<RedirectToSignIn />} />
         </Routes>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <UserCreditsProvider>
+      <BrowserRouter>
+        <Toaster position="top-center" />
+        <AppContent />
       </BrowserRouter>
     </UserCreditsProvider>
   );
 };
+
 export default App;

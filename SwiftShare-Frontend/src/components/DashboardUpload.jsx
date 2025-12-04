@@ -1,4 +1,4 @@
-import { Upload, X } from "lucide-react";
+import { Upload, X, CheckCircle, AlertCircle } from "lucide-react";
 import { useRef } from "react";
 
 const DashboardUpload = ({
@@ -42,9 +42,15 @@ const DashboardUpload = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-full">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Upload Files</h2>
-      <p className="text-sm text-gray-600 mb-6">
+    <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-6 h-full border border-slate-700 hover:border-orange-500/30 transition-colors">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="bg-orange-500/20 p-2 rounded-lg">
+          <Upload className="w-5 h-5 text-orange-400" />
+        </div>
+        <h2 className="text-xl font-bold text-white">Upload Files</h2>
+      </div>
+
+      <p className="text-sm text-gray-400 mb-6 ml-10">
         {files.length} of {maxFiles} files selected
       </p>
 
@@ -53,10 +59,10 @@ const DashboardUpload = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors mb-6 ${
+        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all mb-6 ${
           draggedOverRef.current
-            ? "border-purple-500 bg-purple-50"
-            : "border-gray-300 bg-gray-50 hover:border-purple-400"
+            ? "border-orange-500 bg-orange-500/10 shadow-lg shadow-orange-500/10"
+            : "border-slate-600 bg-slate-900/50 hover:border-orange-500/50 hover:bg-slate-900"
         }`}
       >
         <input
@@ -67,14 +73,18 @@ const DashboardUpload = ({
           className="hidden"
           accept="*/*"
         />
-        <Upload className="mx-auto mb-3 text-gray-400" size={32} />
-        <p className="text-gray-700 font-medium mb-1">
+        <div className="flex justify-center mb-4">
+          <div className="bg-orange-500/20 p-4 rounded-full">
+            <Upload className="mx-auto text-orange-400" size={32} />
+          </div>
+        </div>
+        <p className="text-gray-200 font-semibold mb-1">
           Drag and drop your files here
         </p>
-        <p className="text-gray-500 text-sm mb-4">or click to browse</p>
+        <p className="text-gray-400 text-sm mb-4">or click to browse</p>
         <button
           onClick={handleBrowseClick}
-          className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+          className="bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2 px-6 rounded-lg font-medium transition-all shadow-lg shadow-orange-500/20"
         >
           Browse Files
         </button>
@@ -83,19 +93,20 @@ const DashboardUpload = ({
       {/* Selected Files List */}
       {files.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
-            Selected Files
+          <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wide flex items-center gap-2">
+            <CheckCircle size={16} className="text-green-400" />
+            Selected Files ({files.length})
           </h3>
-          <div className="space-y-2 mb-6 max-h-64 overflow-y-auto">
+          <div className="space-y-2 mb-6 max-h-64 overflow-y-auto pr-2">
             {files.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between bg-slate-900/50 p-3 rounded-lg border border-slate-700 hover:border-orange-500/50 hover:bg-slate-900 transition-all group"
               >
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="text-purple-600 text-lg">📄</span>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="text-orange-400 text-lg">📄</div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-800 truncate">
+                    <p className="text-sm font-medium text-gray-300 truncate group-hover:text-white transition-colors">
                       {file.name}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -105,7 +116,7 @@ const DashboardUpload = ({
                 </div>
                 <button
                   onClick={() => onRemoveFile(index)}
-                  className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded transition-colors"
+                  className="ml-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 p-1.5 rounded-lg transition-all"
                   title="Remove file"
                 >
                   <X size={18} />
@@ -118,21 +129,32 @@ const DashboardUpload = ({
           <button
             onClick={onUpload}
             disabled={uploading || files.length === 0}
-            className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${
+            className={`w-full py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
               uploading || files.length === 0
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
+                ? "bg-slate-700/50 text-gray-500 cursor-not-allowed border border-slate-600"
+                : "bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white cursor-pointer shadow-lg shadow-orange-500/20"
             }`}
           >
             {uploading ? (
-              <span className="flex items-center justify-center gap-2">
+              <>
                 <span className="inline-block animate-spin">⟳</span>
                 Uploading...
-              </span>
+              </>
             ) : (
-              `Upload ${files.length} File${files.length !== 1 ? "s" : ""}`
+              <>
+                <Upload size={18} />
+                Upload {files.length} File{files.length !== 1 ? "s" : ""}
+              </>
             )}
           </button>
+        </div>
+      )}
+
+      {files.length === 0 && (
+        <div className="text-center py-4">
+          <p className="text-xs text-gray-500">
+            Maximum {maxFiles} files per upload
+          </p>
         </div>
       )}
     </div>

@@ -10,6 +10,7 @@ import {
   Music,
   Trash2,
   Video,
+  Share2,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,18 +27,18 @@ const FileCard = ({
   const getFileIcon = (file) => {
     const extension = file.name.split(".").pop().toLowerCase();
     if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(extension)) {
-      return <Image size={32} className="text-purple-500" />;
+      return <Image size={40} className="text-purple-400" />;
     }
     if (["mp4", "webm", "mov", "avi", "mkv"].includes(extension)) {
-      return <Video size={32} className="text-blue-500" />;
+      return <Video size={40} className="text-blue-400" />;
     }
     if (["mp3", "wav", "ogg", "flac", "mp4a"].includes(extension)) {
-      return <Music size={32} className="text-green-500" />;
+      return <Music size={40} className="text-green-400" />;
     }
     if (["pdf", "docx", "xlsx", "doc", "rtf", "txt"].includes(extension)) {
-      return <FileText size={32} className="text-amber-500" />;
+      return <FileText size={40} className="text-orange-400" />;
     }
-    return <FileIcon size={32} className="text-purple-500" />;
+    return <FileIcon size={40} className="text-purple-400" />;
   };
 
   const formatFileSize = (bytes) => {
@@ -59,28 +60,38 @@ const FileCard = ({
     });
   };
 
+  const handleViewFile = (e) => {
+    e.preventDefault();
+    // Open in new tab
+    const url = `${window.location.origin}/file/${file.id}`;
+    window.open(url, "_blank", "noreferrer");
+  };
+
   return (
     <div
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
-      className="relative group overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
+      className="relative group overflow-hidden rounded-xl bg-linear-to-br from-slate-800 to-slate-900 shadow-lg hover:shadow-xl border border-slate-700 hover:border-orange-500/50 transition-all duration-300"
     >
       {/* File preview section */}
-      <div className="h-32 bg-linear-to-br from-purple-50 to-indigo-50 flex items-center justify-center p-4">
+      <div className="h-32 bg-linear-to-br from-slate-700 to-slate-800 flex items-center justify-center p-4">
         {getFileIcon(file)}
       </div>
 
-      <div className="absolute top-2 right-2">
+      {/* Status Badge */}
+      <div className="absolute top-3 right-3">
         <div
-          className={`rounded-full p-1.5 ${
-            file.isPublic ? "bg-green-100" : "bg-gray-100"
+          className={`rounded-full p-2 border backdrop-blur-sm transition-all ${
+            file.isPublic
+              ? "bg-green-500/20 border-green-500/50"
+              : "bg-slate-800/80 border-slate-600"
           }`}
           title={file.isPublic ? "Public" : "Private"}
         >
           {file.isPublic ? (
-            <Globe size={14} className="text-green-600" />
+            <Globe size={16} className="text-green-400" />
           ) : (
-            <Lock size={14} className="text-gray-600" />
+            <Lock size={16} className="text-gray-400" />
           )}
         </div>
       </div>
@@ -88,71 +99,69 @@ const FileCard = ({
       {/* File details section */}
       <div className="p-4">
         <div className="flex justify-between items-start">
-          <div className="overflow-hidden">
+          <div className="overflow-hidden flex-1">
             <h3
               title={file.name}
-              className="font-medium text-gray-900 truncate"
+              className="font-semibold text-gray-100 truncate group-hover:text-orange-400 transition-colors"
             >
               {file.name}
             </h3>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-2">
               {formatFileSize(file.size)} · {formatDate(file.uploadAt)}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Action Buttons Overlay */}
       <div
-        className={`absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent flex items-end justify-center p-4 transition-opacity duration-300 ${
-          showActions ? "opacity-100" : "opacity-0"
+        className={`absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent flex items-end justify-center p-4 transition-all duration-300 ${
+          showActions ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex gap-3 w-full justify-center">
+        <div className="flex gap-2 w-full justify-center flex-wrap">
           {file.isPublic && (
             <button
               onClick={() => onShareLink(file.id)}
-              title="Share Link"
-              className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors text-purple-500 hover:text-purple-600"
+              title="Copy share link"
+              className="p-2.5 bg-white/90 hover:bg-white rounded-full transition-all text-orange-500 hover:text-orange-600 shadow-lg hover:shadow-xl"
             >
-              <Copy size={20} />
+              <Copy size={18} />
             </button>
           )}
 
           {file.isPublic && (
-            <a
-              href={`/file/${file.id}`}
-              title="View File"
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors text-gray-700 hover:text-gray-900"
+            <button
+              onClick={handleViewFile}
+              title="View public file"
+              className="p-2.5 bg-white/90 hover:bg-white rounded-full transition-all text-blue-500 hover:text-blue-600 shadow-lg hover:shadow-xl"
             >
-              <Eye size={20} />
-            </a>
+              <Eye size={18} />
+            </button>
           )}
 
           <button
             onClick={() => onDownload(file.id, file.name)}
             title="Download"
-            className="p-2 bg-white/90 rounded-full hover:bg-white cursor-pointer transition-colors text-green-500 hover:text-green-700"
+            className="p-2.5 bg-white/90 hover:bg-white rounded-full transition-all text-green-500 hover:text-green-600 shadow-lg hover:shadow-xl"
           >
-            <Download size={20} />
+            <Download size={18} />
           </button>
 
           <button
             onClick={() => onTogglePublic(file)}
             title={file.isPublic ? "Make Private" : "Make Public"}
-            className="p-2 bg-white/90 rounded-full hover:bg-white cursor-pointer transition-colors text-amber-500 hover:text-amber-700"
+            className="p-2.5 bg-white/90 hover:bg-white rounded-full transition-all text-purple-500 hover:text-purple-600 shadow-lg hover:shadow-xl"
           >
-            {file.isPublic ? <Lock size={20} /> : <Globe size={20} />}
+            {file.isPublic ? <Lock size={18} /> : <Globe size={18} />}
           </button>
 
           <button
             onClick={() => onFileDelete(file.id)}
             title="Delete"
-            className="p-2 bg-white/90 rounded-full hover:bg-white cursor-pointer transition-colors text-red-500 hover:text-red-700"
+            className="p-2.5 bg-white/90 hover:bg-white rounded-full transition-all text-red-500 hover:text-red-600 shadow-lg hover:shadow-xl"
           >
-            <Trash2 size={20} />
+            <Trash2 size={18} />
           </button>
         </div>
       </div>

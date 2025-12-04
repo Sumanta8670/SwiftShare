@@ -56,7 +56,6 @@ const MyFiles = () => {
     }
   };
 
-  // Toggles the public/private status
   const toggleFile = async (fileToUpdate) => {
     try {
       const token = await getToken();
@@ -83,19 +82,16 @@ const MyFiles = () => {
     }
   };
 
-  // Handle file update from FileCard
   const handleFileUpdate = (updatedFile) => {
     setFiles(
       files.map((file) => (file.id === updatedFile.id ? updatedFile : file))
     );
   };
 
-  // Handle file delete from FileCard
   const handleFileDelete = (fileId) => {
     setFiles(files.filter((file) => file.id !== fileId));
   };
 
-  // Download file
   const handleDownload = async (fileId, fileName) => {
     try {
       const token = await getToken();
@@ -120,7 +116,6 @@ const MyFiles = () => {
     }
   };
 
-  // Delete file after confirmation
   const handleDelete = async () => {
     const fileId = deleteConfirmation.fileId;
     if (!fileId) return;
@@ -140,25 +135,28 @@ const MyFiles = () => {
     }
   };
 
-  // Closes the delete confirmation modal
   const closeDeleteConfirmation = () => {
     setDeleteConfirmation({ isOpen: false, fileId: null });
   };
 
-  // Open delete confirmation
   const openDeleteConfirmation = (fileId) => {
     setDeleteConfirmation({ isOpen: true, fileId });
   };
 
-  // Open the share modal
   const openShareModal = (fileId) => {
-    const link = `${window.location.origin}/file/${fileId}`;
-    setShareModal({ isOpen: true, fileId, link });
+    // Generate the full share link
+    const shareLink = `${window.location.origin}/file/${fileId}`;
+    setShareModal({ isOpen: true, fileId, link: shareLink });
   };
 
-  // Close the share link modal
   const closeShareModal = () => {
     setShareModal({ isOpen: false, fileId: null, link: "" });
+  };
+
+  // Handle eye button click - navigate to public file view
+  const handleViewFile = (fileId) => {
+    // Navigate to the public file view page
+    navigate(`/file/${fileId}`);
   };
 
   useEffect(() => {
@@ -168,60 +166,67 @@ const MyFiles = () => {
   const getFileIcon = (file) => {
     const extension = file.name.split(".").pop().toLowerCase();
     if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(extension)) {
-      return <Image size={20} className="text-purple-500" />;
+      return <Image size={20} className="text-purple-400" />;
     }
     if (["mp4", "webm", "mov", "avi", "mkv"].includes(extension)) {
-      return <Video size={20} className="text-blue-500" />;
+      return <Video size={20} className="text-blue-400" />;
     }
     if (["mp3", "wav", "ogg", "flac", "mp4a"].includes(extension)) {
-      return <Music size={20} className="text-green-500" />;
+      return <Music size={20} className="text-green-400" />;
     }
     if (["pdf", "docx", "xlsx", "doc", "rtf", "txt"].includes(extension)) {
-      return <FileText size={20} className="text-amber-500" />;
+      return <FileText size={20} className="text-orange-400" />;
     }
-    return <FileIcon size={20} className="text-purple-500" />;
+    return <FileIcon size={20} className="text-purple-400" />;
   };
 
   return (
     <DashboardLayout activeMenu="MyFiles">
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">My Files ({files.length})</h2>
-          <div className="flex items-center gap-3">
-            <List
-              size={24}
+      <div className="p-8 min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-4xl font-bold text-white">My Files</h2>
+            <p className="text-gray-400 mt-2">Manage your uploaded files</p>
+          </div>
+          <div className="flex items-center gap-2 bg-slate-800/50 border border-slate-700 rounded-lg p-1">
+            <button
               onClick={() => setViewMode("list")}
-              className={`cursor-pointer transition-colors ${
+              className={`p-2 rounded transition-all ${
                 viewMode === "list"
-                  ? "text-blue-600"
-                  : "text-gray-400 hover:text-gray-600"
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20"
+                  : "text-gray-400 hover:text-white"
               }`}
-            />
-            <Grid
-              size={24}
+              title="List view"
+            >
+              <List size={20} />
+            </button>
+            <button
               onClick={() => setViewMode("grid")}
-              className={`cursor-pointer transition-colors ${
+              className={`p-2 rounded transition-all ${
                 viewMode === "grid"
-                  ? "text-blue-600"
-                  : "text-gray-400 hover:text-gray-600"
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20"
+                  : "text-gray-400 hover:text-white"
               }`}
-            />
+              title="Grid view"
+            >
+              <Grid size={20} />
+            </button>
           </div>
         </div>
 
         {files.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 flex flex-col items-center justify-center">
-            <File size={60} className="text-purple-300 mb-4" />
-            <h3 className="text-xl font-medium text-gray-700 mb-2">
+          <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-16 flex flex-col items-center justify-center border border-slate-700">
+            <File size={64} className="text-slate-700 mb-6" />
+            <h3 className="text-2xl font-bold text-white mb-3">
               No files uploaded yet.
             </h3>
-            <p className="text-gray-500 text-center max-w-md mb-6">
+            <p className="text-gray-400 text-center max-w-md mb-8">
               Start uploading files to see them listed here. You can upload
               documents, images and other files to share and manage.
             </p>
             <button
               onClick={() => navigate("/upload")}
-              className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+              className="px-6 py-3 bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-all shadow-lg shadow-orange-500/20"
             >
               Go to Upload
             </button>
@@ -241,106 +246,102 @@ const MyFiles = () => {
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <div className="overflow-x-auto bg-linear-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl border border-slate-700">
             <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-slate-900/50 border-b border-slate-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Size
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Uploaded
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sharing
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-slate-700">
                 {files.map((file) => (
                   <tr
                     key={file.id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="hover:bg-slate-800/50 transition-colors border-b border-slate-700/30"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                      <div className="flex items-center gap-2">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
+                      <div className="flex items-center gap-3">
                         {getFileIcon(file)}
-                        <span className="max-w-xs truncate">{file.name}</span>
+                        <span className="max-w-xs truncate hover:text-orange-400 transition-colors">
+                          {file.name}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                       {(file.size / 1024).toFixed(1)} KB
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                       {new Date(file.uploadAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={() => toggleFile(file)}
-                          className="flex items-center gap-2 cursor-pointer group"
-                        >
-                          {file.isPublic ? (
-                            <>
-                              <Globe size={20} className="text-green-600" />
-                              <span className="group-hover:underline text-green-600">
-                                Public
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              <Lock size={20} className="text-red-600" />
-                              <span className="group-hover:underline text-red-600">
-                                Private
-                              </span>
-                            </>
-                          )}
-                        </button>
-                        {file.isPublic && (
-                          <button
-                            onClick={() => openShareModal(file.id)}
-                            className="flex items-center gap-2 cursor-pointer group text-blue-600"
-                          >
-                            <Copy size={20} />
-                            <span className="group-hover:underline">
-                              Copy Link
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <button
+                        onClick={() => toggleFile(file)}
+                        className="flex items-center gap-2 cursor-pointer group"
+                      >
+                        {file.isPublic ? (
+                          <div className="flex items-center gap-1.5 px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full group-hover:border-green-500/50 transition-all">
+                            <Globe size={14} className="text-green-400" />
+                            <span className="text-xs font-medium text-green-400">
+                              Public
                             </span>
-                          </button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-700/50 border border-slate-600 rounded-full group-hover:border-slate-500 transition-all">
+                            <Lock size={14} className="text-gray-400" />
+                            <span className="text-xs font-medium text-gray-400">
+                              Private
+                            </span>
+                          </div>
                         )}
-                      </div>
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <button
                           onClick={() => handleDownload(file.id, file.name)}
-                          className="text-gray-500 hover:text-green-600 transition-colors"
-                          title="Download"
+                          className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 p-2 rounded-lg transition-all"
+                          title="Download file"
                         >
-                          <Download size={20} />
+                          <Download size={18} />
                         </button>
                         <button
                           title="Delete"
                           onClick={() => openDeleteConfirmation(file.id)}
-                          className="text-gray-500 hover:text-red-600 transition-colors"
+                          className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 p-2 rounded-lg transition-all"
                         >
-                          <Trash2 size={20} />
+                          <Trash2 size={18} />
                         </button>
                         {file.isPublic && (
-                          <a
-                            href={`/file/${file.id}`}
-                            title="View File"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-gray-500 hover:text-blue-600 transition-colors"
-                          >
-                            <Eye size={20} />
-                          </a>
+                          <>
+                            <button
+                              onClick={() => openShareModal(file.id)}
+                              className="text-gray-400 hover:text-orange-400 hover:bg-orange-500/10 p-2 rounded-lg transition-all"
+                              title="Copy share link"
+                            >
+                              <Copy size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleViewFile(file.id)}
+                              title="View public file"
+                              className="text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 p-2 rounded-lg transition-all"
+                            >
+                              <Eye size={18} />
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>
@@ -360,7 +361,7 @@ const MyFiles = () => {
           confirmText="Delete"
           cancelText="Cancel"
           onConfirm={handleDelete}
-          confirmButtonClass="bg-red-600 hover:bg-red-700"
+          confirmButtonClass="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
         />
 
         {/* Share link modal */}

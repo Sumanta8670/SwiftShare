@@ -241,102 +241,130 @@ const Subscription = () => {
   };
   return (
     <DashboardLayout activeMenu="Subscription">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-2">Subscription Plans</h1>
-        <p className="text-gray-600 mb-6">Choose a plan that works for you</p>
+      <div className="p-6 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Subscription Plans
+          </h1>
+          <p className="text-gray-300">Choose a plan that works for you</p>
+        </div>
+
         {message && (
           <div
-            className={`mb-4 p-3 rounded-lg flex items-center gap-3 ${
+            className={`mb-6 p-4 rounded-lg flex items-center gap-3 border ${
               messageType === "success"
-                ? "bg-green-100 text-green-800"
+                ? "bg-green-500/10 text-green-400 border-green-500/30"
                 : messageType === "error"
-                ? "bg-red-100 text-red-800"
-                : "bg-blue-100 text-blue-800"
+                ? "bg-red-500/10 text-red-400 border-red-500/30"
+                : "bg-blue-500/10 text-blue-400 border-blue-500/30"
             }`}
           >
             {messageType === "error" && <AlertCircle size={20} />}
             {message}
           </div>
         )}
-        <div className="flex flex-col md:flex-row gap-6 mb-8">
-          <div className="bg-blue-50 p-6 rounded-lg">
-            <div className="flex items-center gap-2 mb-4">
-              <CreditCard className="text-blue-600" />
-              <h2 className="text-lg font-medium">
-                Current Credits:{" "}
-                <span className="font-bold text-purple-500">{credits}</span>
-              </h2>
+
+        {/* Credits Display */}
+        <div className="mb-8 bg-linear-to-r from-orange-500/10 to-blue-500/10 border border-orange-500/30 rounded-xl p-6 hover:border-orange-500/50 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-400 text-sm mb-2">
+                Current Credits Balance
+              </p>
+              <p className="text-4xl font-bold text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600">
+                {credits}
+              </p>
             </div>
-            <p className="text-sm text-gray-600 mt-2">
-              You can upload {credits} files. Upgrade your plan to get more
-              credits!
-            </p>
+            <div className="bg-orange-500/20 p-4 rounded-lg">
+              <CreditCard className="text-orange-400" size={32} />
+            </div>
           </div>
+          <p className="text-gray-400 text-sm mt-4">
+            You can upload {credits} files with your current credits. Upgrade
+            your plan to get more!
+          </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-6">
+
+        {/* Plans Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`border rounded-xl p-6 ${
+              className={`rounded-xl overflow-hidden transition-all border flex flex-col ${
                 plan.recommended
-                  ? "border-blue-200 bg-purple-50 shadow-md"
-                  : "border-gray-300 bg-white"
+                  ? "bg-linear-to-br from-orange-500/20 to-blue-500/20 border-orange-500 shadow-2xl shadow-orange-500/20 lg:scale-105"
+                  : "bg-slate-800/50 border-slate-700 hover:border-orange-500/50"
               }`}
             >
               {plan.recommended && (
-                <div className="inline-block bg-purple-500 text-white text-xs font-semibold">
-                  Recommended
+                <div className="px-6 pt-4 pb-0">
+                  <div className="inline-block bg-linear-to-r from-orange-500 to-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    RECOMMENDED
+                  </div>
                 </div>
               )}
-              <h3 className="text-xl font-bold">{plan.name}</h3>
-              <div className="mt-2 mb-4">
-                <span className="text-3xl font-bold">₹{plan.price}</span>{" "}
-                <span className="text-gray-500 text-sm">
-                  / month for {plan.credits} credits
-                </span>
+              <div className="flex-1 p-6 flex flex-col">
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {plan.name}
+                </h3>
+                <p className="text-gray-400 text-sm mb-4 h-8">
+                  {plan.description}
+                </p>
+                <div className="mb-6">
+                  <span className="text-3xl font-bold text-white">
+                    ₹{plan.price}
+                  </span>
+                  <span className="text-gray-400 text-sm ml-2">/month</span>
+                </div>
+                <button
+                  onClick={() => handlePurchase(plan)}
+                  disabled={processingPayment}
+                  className={`w-full py-3 rounded-lg font-semibold transition-all mb-6 flex items-center justify-center gap-2 ${
+                    plan.recommended
+                      ? "bg-linear-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700"
+                      : "border border-orange-500 text-orange-400 hover:bg-orange-500/10"
+                  }`}
+                >
+                  {processingPayment ? (
+                    <>
+                      <Loader2 className="animate-spin" size={16} />
+                      Processing...
+                    </>
+                  ) : (
+                    `Subscribe to ${plan.name}`
+                  )}
+                </button>
+                <div className="space-y-2 text-sm">
+                  {plan.features.slice(0, 4).map((feature, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <Check
+                        size={14}
+                        className="text-orange-400 mt-1 shrink-0"
+                      />
+                      <span className="text-gray-300">{feature}</span>
+                    </div>
+                  ))}
+                  {plan.features.length > 4 && (
+                    <p className="text-orange-400 font-semibold text-xs pt-2">
+                      + {plan.features.length - 4} more features
+                    </p>
+                  )}
+                </div>
               </div>
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <Check
-                      size={18}
-                      className="text-green-500 mr-2 mt-0.5 shrink-0"
-                    />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => handlePurchase(plan)}
-                disabled={processingPayment}
-                className={`w-full py-2 rounded-md font-medium transition-colors ${
-                  plan.recommended
-                    ? "bg-purple-600 text-white hover:bg-purple-700"
-                    : "bg-white border border-purple-500 text-purple-500 hover:bg-blue-700"
-                }disabled:opacity-50 flex items-center justify-center gap-2`}
-              >
-                {processingPayment ? (
-                  <>
-                    <Loader2 className="animate-spin" size={16} />
-                    <span>Processing...</span>
-                  </>
-                ) : (
-                  <span>Subscribe to {plan.name}</span>
-                )}
-              </button>
             </div>
           ))}
         </div>
-        <div className="mt-8 bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <h3 className="font-medium mb-2">How Credits Works</h3>
-          <p className="text-sm text-gray-600">
-            Each credit allows you to upload one file. For example, if you have
-            10 credits, you can upload 10 files. Credits never expire and can be
-            used at any time. When you subscribe to a plan, your credits are
-            added to your account balance. You can use your credits to upload
-            files until you run out of credits. To upload more files, simply
-            subscribe to a higher plan or renew your subscription to get
-            additional credits.
+
+        {/* Info Section */}
+        <div className="mt-12 bg-slate-800/50 border border-slate-700 rounded-xl p-8 hover:border-orange-500/50 transition-all">
+          <h3 className="text-xl font-bold text-white mb-4">
+            How Credits Work
+          </h3>
+          <p className="text-gray-300 leading-relaxed">
+            Each credit allows you to upload one file. Your credits never expire
+            and can be used anytime. When you subscribe to a plan, your credits
+            are instantly added to your account. Upgrade anytime to increase
+            your uploading capacity.
           </p>
         </div>
       </div>

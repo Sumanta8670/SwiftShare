@@ -1,4 +1,4 @@
-import { Download, Share2, Lock, Globe } from "lucide-react";
+import { Download, Share2, Lock, Globe, FileText } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
 
@@ -59,85 +59,94 @@ const RecentFiles = ({ files, totalFiles }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Recent Files ({totalFiles})
-        </h2>
+    <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl overflow-hidden border border-slate-700 hover:border-orange-500/30 transition-colors">
+      <div className="p-6 border-b border-slate-700/50">
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-500/20 p-2 rounded-lg">
+            <FileText className="w-5 h-5 text-blue-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white">
+            Recent Files
+            <span className="text-gray-400 font-normal text-base ml-2">
+              ({totalFiles})
+            </span>
+          </h2>
+        </div>
       </div>
 
       {files.length === 0 ? (
         <div className="p-12 text-center">
-          <p className="text-gray-500 text-lg">
+          <FileText className="w-12 h-12 text-slate-700 mx-auto mb-4" />
+          <p className="text-gray-400 text-lg">
             No files yet. Upload your first file!
           </p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-900/50 border-b border-slate-700">
               <tr className="text-left">
-                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Size
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Uploaded By
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Modified
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Sharing
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Status
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-slate-700">
               {files.map((file) => (
                 <tr
                   key={file.id}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-slate-800/50 transition-all duration-200 border-b border-slate-700/30"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{getFileIcon(file.name)}</span>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-medium text-gray-200 truncate hover:text-orange-400 transition-colors">
                           {file.name}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                     {formatFileSize(file.size)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                     You
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                     {formatDate(file.uploadAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       {file.isPublic ? (
-                        <>
-                          <Globe size={16} className="text-blue-600" />
-                          <span className="text-xs font-medium text-blue-600">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-500/20 border border-green-500/30 rounded-full">
+                          <Globe size={14} className="text-green-400" />
+                          <span className="text-xs font-medium text-green-400">
                             Public
                           </span>
-                        </>
+                        </div>
                       ) : (
-                        <>
-                          <Lock size={16} className="text-gray-600" />
-                          <span className="text-xs font-medium text-gray-600">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-700/50 border border-slate-600 rounded-full">
+                          <Lock size={14} className="text-gray-400" />
+                          <span className="text-xs font-medium text-gray-400">
                             Private
                           </span>
-                        </>
+                        </div>
                       )}
                     </div>
                   </td>
@@ -145,13 +154,13 @@ const RecentFiles = ({ files, totalFiles }) => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleDownload(file.id, file.name)}
-                        className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors"
+                        className="text-blue-400 hover:text-blue-300 p-2 hover:bg-blue-500/10 rounded-lg transition-all"
                         title="Download file"
                       >
                         <Download size={18} />
                       </button>
                       <button
-                        className="text-gray-600 hover:text-purple-600 p-1 hover:bg-purple-50 rounded transition-colors"
+                        className="text-orange-400 hover:text-orange-300 p-2 hover:bg-orange-500/10 rounded-lg transition-all"
                         title="Share file"
                       >
                         <Share2 size={18} />

@@ -46,23 +46,31 @@ const UploadBox = ({
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
-          <Upload className="w-5 h-5 text-blue-600" />
-          <h2 className="text-xl font-semibold text-gray-800">Upload Files</h2>
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-3">
+          <div className="bg-orange-500/20 p-3 rounded-lg">
+            <Upload className="w-6 h-6 text-orange-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white">Upload Files</h2>
+            <p className="text-xs text-gray-400 mt-1">Secure & encrypted</p>
+          </div>
         </div>
-        <div className="text-sm text-gray-600">
-          <span className="font-medium">{remainingCredits}</span> credits
-          remaining
+        <div className="bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-lg">
+          <div className="text-sm text-gray-400">
+            <span className="font-bold text-blue-400">{remainingCredits}</span>{" "}
+            credits
+            <span className="text-gray-500"> remaining</span>
+          </div>
         </div>
       </div>
 
       {/* Upload Area */}
       <div
-        className={`relative border-2 border-dashed rounded-lg p-12 text-center transition-all duration-200 ${
+        className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
           dragActive
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 bg-white hover:border-blue-400 hover:bg-gray-50"
+            ? "border-orange-500 bg-orange-500/10 shadow-lg shadow-orange-500/10"
+            : "border-slate-600 bg-slate-900/50 hover:border-orange-500/50 hover:bg-slate-900"
         }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -80,22 +88,22 @@ const UploadBox = ({
         />
 
         <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-            <Upload className="w-8 h-8 text-blue-600" />
+          <div className="w-20 h-20 rounded-full bg-linear-to-br from-orange-500/20 to-blue-500/20 flex items-center justify-center border border-orange-500/30">
+            <Upload className="w-10 h-10 text-orange-400" />
           </div>
 
           <div>
-            <p className="text-lg font-medium text-gray-700">
+            <p className="text-lg font-bold text-white">
               Drag and drop files here
             </p>
-            <p className="text-sm text-gray-500 mt-1">
-              or click to browse ({remainingCredits} credits remaining)
+            <p className="text-sm text-gray-400 mt-1">
+              or click to browse ({remainingCredits} credits available)
             </p>
           </div>
 
           <button
             type="button"
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-8 py-2.5 bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg transition-all font-semibold shadow-lg shadow-orange-500/20"
             onClick={(e) => {
               e.stopPropagation();
               handleClick();
@@ -108,20 +116,23 @@ const UploadBox = ({
 
       {/* Selected Files List */}
       {files.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            Selected Files ({files.length})
-          </h3>
-          <div className="space-y-2">
+        <div className="mt-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+            <h3 className="text-lg font-bold text-white">
+              Selected Files ({files.length})
+            </h3>
+          </div>
+          <div className="space-y-2 mb-6">
             {files.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-orange-500/50 hover:bg-slate-800 transition-all group"
               >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <File className="w-5 h-5 text-blue-600 shrink-0" />
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <File className="w-5 h-5 text-orange-400 shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700 truncate">
+                    <p className="text-sm font-medium text-gray-200 truncate group-hover:text-orange-400 transition-colors">
                       {file.name}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -131,24 +142,24 @@ const UploadBox = ({
                 </div>
                 <button
                   onClick={() => onRemoveFile(index)}
-                  className="p-1 hover:bg-red-100 rounded-full transition-colors shrink-0"
+                  className="p-2 hover:bg-red-500/10 rounded-lg transition-all text-gray-400 hover:text-red-400 shrink-0 ml-2"
                   title="Remove file"
                 >
-                  <X className="w-5 h-5 text-red-600" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
             ))}
           </div>
 
           {/* Upload Button */}
-          <div className="mt-6 flex justify-end">
+          <div className="flex justify-end gap-3">
             <button
               onClick={onUpload}
               disabled={isUploadDisabled}
-              className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
+              className={`px-8 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
                 isUploadDisabled
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg"
+                  ? "bg-slate-700/50 text-gray-500 cursor-not-allowed border border-slate-600"
+                  : "bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg shadow-orange-500/20 hover:shadow-xl"
               }`}
             >
               {uploading ? (
@@ -169,9 +180,10 @@ const UploadBox = ({
 
       {/* Info Text */}
       {files.length === 0 && (
-        <div className="mt-4 text-center">
+        <div className="mt-6 p-4 bg-slate-800/30 border border-slate-700 rounded-lg text-center">
           <p className="text-xs text-gray-500">
-            Maximum 5 files per upload. Each file consumes 1 credit.
+            ✓ Maximum 5 files per upload • Each file consumes 1 credit • Files
+            encrypted with 256-bit AES
           </p>
         </div>
       )}

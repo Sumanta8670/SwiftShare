@@ -1,5 +1,4 @@
 import { useClerk, useUser } from "@clerk/clerk-react";
-import Footer from "../components/Footer.jsx";
 import CTASection from "../components/landing/CTASection.jsx";
 import FeaturesSection from "../components/landing/FeaturesSection.jsx";
 import HeroSection from "../components/landing/HeroSection.jsx";
@@ -8,6 +7,7 @@ import TestimonialsSection from "../components/landing/TestimonialsSection.jsx";
 import { features, pricePlans, testimonials } from "../assets/data.js";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 const Landing = () => {
   const { openSignIn, openSignUp } = useClerk();
   const { isSignedIn } = useUser();
@@ -18,25 +18,23 @@ const Landing = () => {
       navigate("/dashboard");
     }
   }, [isSignedIn, navigate]);
+
   return (
-    <div className="landing-page bg-linear-to-b from-gray-50 to-gray-100">
-      {/*Hero Section */}
+    <div className="landing-page w-full overflow-x-hidden bg-linear-to-b from-slate-900 via-slate-800 to-slate-900">
+      {/* Hero Section */}
       <HeroSection openSignIn={openSignIn} openSignUp={openSignUp} />
 
-      {/*Features Section */}
+      {/* Features Section */}
       <FeaturesSection features={features} />
 
-      {/*Pricing Section */}
+      {/* Pricing Section */}
       <PricingSection pricePlans={pricePlans} openSignUp={openSignUp} />
 
-      {/*Testimonials Section */}
+      {/* Testimonials Section */}
       <TestimonialsSection testimonials={testimonials} />
 
-      {/*CTA Section */}
+      {/* CTA Section */}
       <CTASection openSignUp={openSignUp} />
-
-      {/*Footer Section */}
-      <Footer />
     </div>
   );
 };
