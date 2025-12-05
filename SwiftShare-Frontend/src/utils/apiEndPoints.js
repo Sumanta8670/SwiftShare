@@ -1,4 +1,4 @@
-const BASE_URL = "https://swiftshare-pznm.onrender.com";
+const BASE_URL = "https://swiftshare-87l7.onrender.com";
 
 export const apiEndPoints = {
   GET_CREDITS: `${BASE_URL}/users/credits`,
